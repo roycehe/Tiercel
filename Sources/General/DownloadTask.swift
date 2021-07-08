@@ -35,7 +35,7 @@ public class DownloadTask: Task<DownloadTask> {
 
     private var acceptableStatusCodes: Range<Int> { return 200..<300 }
     
-    private var _sessionTask: URLSessionDownloadTask? {
+    public var _sessionTask: URLSessionDownloadTask? {
         willSet {
             _sessionTask?.removeObserver(self, forKeyPath: "currentRequest")
         }
