@@ -512,6 +512,11 @@ extension DownloadTask {
         progress.totalUnitCount = totalBytesExpectedToWrite
         progressExecuter?.execute(self)
         manager?.updateProgress()
+        if let mimeType = self._sessionTask?.response?.mimeType {
+            if self.mimeType.count < 1 {
+                self.mimeType = mimeType
+            }
+        }
         NotificationCenter.default.postNotification(name: DownloadTask.runningNotification, downloadTask: self)
     }
     
@@ -520,6 +525,7 @@ extension DownloadTask {
         guard let statusCode = (task.response as? HTTPURLResponse)?.statusCode,
             acceptableStatusCodes.contains(statusCode)
             else { return }
+        
         cache.storeFile(at: location, to: URL(fileURLWithPath: filePath))
         cache.removeTmpFile(tmpFileName)
 
@@ -540,8 +546,9 @@ extension DownloadTask {
             
         case let .network(task, error):
             manager?.maintainTasks(with: .removeRunningTasks(self))
+           
             sessionTask = nil
-
+            
             switch status {
             case .willCancel, .willRemove:
                 determineStatus(with: .manual)

@@ -50,6 +50,7 @@ public class Task<TaskType>: NSObject, Codable {
         case verificationType
         case validation
         case error
+        case mimeType
     }
     
     enum CompletionType {
@@ -88,6 +89,7 @@ public class Task<TaskType>: NSObject, Codable {
         var fileName: String
         var timeRemaining: Int64 = 0
         var error: Error?
+        var mimeType: String = ""
 
         var progressExecuter: Executer<TaskType>?
         var successExecuter: Executer<TaskType>?
@@ -182,6 +184,12 @@ public class Task<TaskType>: NSObject, Codable {
         get { protectedState.directValue.fileName }
         set { protectedState.write { $0.fileName = newValue } }
     }
+    
+    /// 默认为url的md5加上文件扩展名
+    public internal(set) var mimeType: String {
+        get { protectedState.directValue.mimeType }
+        set { protectedState.write { $0.mimeType = newValue } }
+    }
 
     public internal(set) var timeRemaining: Int64 {
         get { protectedState.directValue.timeRemaining }
@@ -247,6 +255,7 @@ public class Task<TaskType>: NSObject, Codable {
         try container.encode(url, forKey: .url)
         try container.encode(currentURL, forKey: .currentURL)
         try container.encode(fileName, forKey: .fileName)
+        try container.encode(mimeType, forKey: .mimeType)
         try container.encodeIfPresent(headers, forKey: .headers)
         try container.encode(startDate, forKey: .startDate)
         try container.encode(endDate, forKey: .endDate)
