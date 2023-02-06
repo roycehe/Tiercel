@@ -42,6 +42,8 @@ public class SessionManager {
     
     public let identifier: String
     
+     public var shouldProgressAnyTask = false
+    
     public var completionHandler: (() -> Void)?
 
     public var configuration: SessionConfiguration {
